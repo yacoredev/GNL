@@ -61,8 +61,11 @@ char    *ft_strjoin(char *s1, char const *s2)
         size = ft_strlen(s1) + ft_strlen(s2) + 1;
         concat = malloc(size);
         if (!concat)
+        {
+                free(s1);
                 return (NULL);
-        concat[size] = '\0';
+        }
+        concat[0] = '\0';
         ft_strlcat(concat, s1, size);
         ft_strlcat(concat, s2, size);
         free(s1);

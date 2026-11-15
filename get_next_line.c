@@ -10,11 +10,20 @@ static int    get_line(char *buffer, int fd, char **rest)
 
     while(1)
     {
+        i = 0;
+        while ((*rest)[i])
+        {
+            // 1   -> newline found
+            if ((*rest)[i] == '\n')
+                return (1);
+            i++;
+        }
         bytes = read(fd, buffer, BUFFER_SIZE);
         // -1  -> read error
         if (bytes < 0)
         {
             free(*rest);
+            *rest = NULL;
             return (-1);
         }
         // 0   -> EOF
@@ -25,14 +34,6 @@ static int    get_line(char *buffer, int fd, char **rest)
         *rest = ft_strjoin(*rest, buffer);
         if (!*rest)
             return (-1);
-        i = 0;
-        while ((*rest)[i])
-        {
-            // 1   -> newline found
-            if ((*rest)[i] == '\n')
-                return (1);
-            i++;
-        }
     }
 }
 
@@ -51,24 +52,24 @@ static char *extract_line(char *rest)
     return (rest);
 }
 
-static char *update_rest(char **rest)
+static char *update_rest(char *rest)
 {
     int end;
     int start;
     char *tmp;
 
     start = 0;
-    while ((*rest)[start] && (*rest)[start] != '\n')
+    while (rest[start] && rest[start] != '\n')
         start++;
-    if ((*rest)[start] == '\n')
+    if (rest[start] == '\n')
         start++;
     end = start;
-    while((*rest)[end])
+    while(rest[end])
         end++;
-    tmp = ft_substr(*rest, start, end - start);
+    tmp = ft_substr(rest, start, end - start);
     if (!tmp)
-        (NULL);
-    free(*rest);
+        return (NULL);
+    free(rest);
     return (tmp);
 }
 
@@ -88,20 +89,21 @@ char *get_next_line(int fd)
     if (!buffer)
         return (NULL);
 
-    if (get_line(buffer, fd, &rest) <= 0)
+    // if get_line return 0 ima tprinti null hit
+    // file khawi or print dakchi li b9a flast line
+    if (get_line(buffer, fd, &rest) < 0)
     {
         free(buffer);
-        if (*rest)
-            return (rest);
         return (NULL);
     }
-    if (!*rest)
+    if (!rest || !*rest)
+    {
+        free(buffer);
         return (NULL);
-
+    }
     line = extract_line(rest);
     
-    rest = update_rest(&rest);
-    if (!rest)
-        return (NULL);
+    rest = update_rest(rest);
+    free(buffer);
     return (line);
 }
