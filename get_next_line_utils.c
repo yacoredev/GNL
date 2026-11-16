@@ -65,7 +65,7 @@ char    *ft_strjoin(char *s1, char const *s2)
                 free(s1);
                 return (NULL);
         }
-        concat[0] = '\0';
+        *concat = '\0';
         ft_strlcat(concat, s1, size);
         ft_strlcat(concat, s2, size);
         free(s1);
@@ -87,9 +87,9 @@ char    *ft_substr(char const *s, unsigned int start, size_t len)
         sub = malloc(allowed_len + 1);
         if (!sub)
                 return (NULL);
-        
+        *sub = '\0';
         // momkin nghyar strlcpy b strlcat? bach tb9a gher function whda
-        
+
         ft_strlcat(sub, s + start, allowed_len + 1);
         return (sub);
 }

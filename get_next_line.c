@@ -11,7 +11,7 @@ static int    get_line(char *buffer, int fd, char **rest)
     while(1)
     {
         i = 0;
-        while ((*rest)[i])
+        while (*rest && (*rest)[i])
         {
             // 1   -> newline found
             if ((*rest)[i] == '\n')
@@ -49,7 +49,7 @@ static char *extract_line(char *rest)
         i++;
     }
     // 3lach khasni nreturn copy dyal rest machi rest direct?
-    return (rest);
+    return (ft_strdup(rest));
 }
 
 static char *update_rest(char *rest)
@@ -102,7 +102,7 @@ char *get_next_line(int fd)
         return (NULL);
     }
     line = extract_line(rest);
-    
+
     rest = update_rest(rest);
     free(buffer);
     return (line);
