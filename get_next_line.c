@@ -6,8 +6,6 @@ static int    get_line(char *buffer, int fd, char **rest)
     ssize_t         bytes;
     ssize_t         i;
 
-    bytes = 1;
-
     while(1)
     {
         bytes = read(fd, buffer, BUFFER_SIZE);
@@ -48,7 +46,6 @@ static char *extract_line(char *rest)
             return (ft_substr(rest, 0, i + 1));
         i++;
     }
-    free(rest);
     return (ft_strdup(rest));
 }
 
@@ -61,12 +58,15 @@ static char *update_rest(char *rest)
     start = 0;
     while (rest[start] && rest[start] != '\n')
         start++;
-    if (rest[start] == '\n')
-        start++;
-    end = start;
-    while(rest[end])
-        end++;
-    tmp = ft_substr(rest, start, end - start);
+    // mal9atx \n (7it mchat ta lakhir, \0 howa li khrjna)
+    if (!rest[start])
+    {
+        free(rest);
+        return (NULL);
+    }
+    // l9at \n w zdna 9dam
+    start++;
+    tmp = ft_substr(rest, start, ft_strlen(rest + start));
     if (!tmp)
     {
         free(rest);
@@ -101,14 +101,15 @@ char *get_next_line(int fd)
         return (NULL);
     }
     // mybe khasni n3zal check dyal !*rest bach ila mab9a ta content nfreeyiha
-    if (!rest || !*rest)
+    // but rani kan3awd nfreeha wst update_rest f (ft_substr)
+    if (!rest)
     {
-        free(buffer); 
-        // free(rest);
+        free(buffer);
         return (NULL);
     }
     line = extract_line(rest);
-    
+    // momkin update.. trja3 null ghatwli rest = null
+    // hna f akhir line kanfree rest but rah mazal copy dyalo f line
     rest = update_rest(rest);
     free(buffer);
     return (line);

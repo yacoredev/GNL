@@ -87,10 +87,7 @@ char    *ft_substr(char const *s, unsigned int start, size_t len)
         sub = malloc(allowed_len + 1);
         if (!sub)
                 return (NULL);
-        
-        // momkin nghyar strlcpy b strlcat? bach tb9a gher function whda
         *sub = '\0';
         ft_strlcat(sub, s + start, allowed_len + 1);
-        // free((char *)s);
         return (sub);
 }
